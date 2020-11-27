@@ -1,0 +1,12 @@
+
+*.json
+*.dll
+*.exe
+*.pdb
+obj/Debug/net5.0-windows/.NETCoreApp,Version=v5.0.AssemblyAttributes.cs
+obj/Debug/net5.0-windows/GameOfLife.AssemblyInfo.cs
+*.cache
+*.txt
+*.editorconfig
+*.props
+*.targets
