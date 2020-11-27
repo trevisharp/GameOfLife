@@ -43,14 +43,14 @@ public class Game
             span[wid] = this[wid - 1, 0] && this[wid, 1] && this[wid - 1, 1];
 
         if (this[0, hei])
-            span[hei * wid] = (this[1, hei] && this[0, hei - 1]) ||
+            span[hei * width] = (this[1, hei] && this[0, hei - 1]) ||
                               (this[1, hei - 1] && this[0, hei - 1]) ||
                               (this[1, hei] && this[1, hei - 1]);
         else
-            span[hei * wid] = this[1, hei] && this[0, hei - 1] && this[1, hei - 1];
+            span[hei * width] = this[1, hei] && this[0, hei - 1] && this[1, hei - 1];
 
         if (this[wid, hei])
-            span[wid + hei * wid] = (this[wid - 1, hei] && this[wid, hei - 1]) ||
+            span[wid + hei * width] = (this[wid - 1, hei] && this[wid, hei - 1]) ||
                                     (this[wid - 1, hei - 1] && this[wid, hei - 1]) ||
                                     (this[wid - 1, hei] && this[wid - 1, hei - 1]);
         else
@@ -66,9 +66,9 @@ public class Game
             if (this[1, j - 1]) count++;
 
             if (this[0, j])
-                span[j * wid] = !(count < 2 || count > 3);
+                span[j * width] = !(count < 2 || count > 3);
             else
-                span[j * wid] = count == 3;
+                span[j * width] = count == 3;
 
             count = 0;
             if (this[wid - 1, j + 1]) count++;
@@ -78,9 +78,9 @@ public class Game
             if (this[wid, j - 1]) count++;
 
             if (this[wid, j])
-                span[wid + j * wid] = !(count < 2 || count > 3);
+                span[wid + j * width] = !(count < 2 || count > 3);
             else
-                span[wid + j * wid] = count == 3;
+                span[wid + j * width] = count == 3;
         }
 
         for (int i = 1; i < hei; i++)
@@ -105,9 +105,9 @@ public class Game
             if (this[i + 1, hei - 1]) count++;
 
             if (this[i, hei])
-                span[i + hei * wid] = !(count < 2 || count > 3);
+                span[i + hei * width] = !(count < 2 || count > 3);
             else
-                span[i + hei * wid] = count == 3;
+                span[i + hei * width] = count == 3;
         }
 
         for (int j = 1; j < hei; j++)
@@ -124,9 +124,9 @@ public class Game
                 if (this[i, j - 1]) count++;
                 if (this[i + 1, j - 1]) count++;
                 if (this[i, j])
-                    span[i + j * wid] = !(count < 2 || count > 3);
+                    span[i + j * width] = !(count < 2 || count > 3);
                 else
-                    span[i + j * wid] = count == 3;
+                    span[i + j * width] = count == 3;
             }
         }
     
