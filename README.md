@@ -2,7 +2,7 @@
 
 ## Todo List
 
-- [X] Grade em escuro para seções brancas 
+- [x] Grade em escuro para seções brancas 
 - [ ] Copiar/Colar
 - [ ] Zoom
 - [ ] Pintar estruturas
