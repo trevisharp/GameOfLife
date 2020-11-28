@@ -8,3 +8,4 @@
 - Gerar gifs
 - Atualizar com base no Git Hub
 - Inicializar grade com tamanho melhor
+- Salvar/Importar/Exportar
