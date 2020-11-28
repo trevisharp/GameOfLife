@@ -119,8 +119,11 @@ ontick = delegate
                 for (int j = 0; j < game.Height; j++)
                 {
                     if (game[i, j])
+                    {
                         g.FillRectangle(Brushes.White, 10 + i * square, 10 + j * square, square, square);
-                    g.DrawRectangle(Pens.White, 10 + i * square, 10 + j * square, square, square);
+                        g.DrawRectangle(Pens.Black, 10 + i * square, 10 + j * square, square, square);
+                    }
+                    else g.DrawRectangle(Pens.White, 10 + i * square, 10 + j * square, square, square);
                 }
             }
         });
