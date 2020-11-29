@@ -10,3 +10,5 @@ obj/Debug/net5.0-windows/GameOfLife.AssemblyInfo.cs
 *.editorconfig
 *.props
 *.targets
+obj/Release/net5.0-windows/.NETCoreApp,Version=v5.0.AssemblyAttributes.cs
+obj/Release/net5.0-windows/GameOfLife.AssemblyInfo.cs

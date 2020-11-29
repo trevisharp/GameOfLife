@@ -294,6 +294,11 @@ class Program
                     opt = 3;
                     break;
                 case Keys.I:
+                    if (opt == 4)
+                    {
+                        opt = 0;
+                        break;
+                    }
                     optinfo =
                     @"
                         Regras de Simulação:
