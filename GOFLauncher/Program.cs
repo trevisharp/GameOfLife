@@ -19,7 +19,7 @@ try
     if (File.Exists("gof.info"))
     {
         StreamReader reader = new StreamReader("gof.info");
-        crrversion = int.Parse(reader.ReadLine() ?? "0");
+        crrversion = int.Parse(reader.ReadLine().Replace(".", "") ?? "0");
         reader.Close();
     }
 
