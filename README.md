@@ -15,4 +15,6 @@
 - [x] Inicializar grade com tamanho melhor
 - [ ] Salvar/Importar/Exportar
 - [ ] Sistema de bordas conectas
-- [ ] Gráfico de população ao longo do tempo
+- [x] Gráfico de população ao longo do tempo
+- [x] Laucher
+- [ ] Ferramentas de desenho
