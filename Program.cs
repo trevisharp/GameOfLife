@@ -62,7 +62,7 @@ class Program
 
         #endregion
 
-        Game game = new Game(10, 10);
+        Game game = null;
         Point p = Point.Empty; //Cursor
         bool started = false;
         float square = 0, zsquare = 0;
@@ -126,6 +126,7 @@ class Program
 
         onload = delegate
         {
+            game = new Game(100, (int)(100.0 / pb.Width * pb.Height));
             draw(g => g.Clear(Color.White));
             setsquare();
         };
