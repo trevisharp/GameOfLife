@@ -11,6 +11,10 @@ public class Game
 
     private bool[] data;
 
+    public PopulationRegister Register = new PopulationRegister();
+
+    public int Generation { get; private set; } = 0;
+
     public Game(int wid, int hei)
     {
         this.width = wid;
@@ -26,6 +30,8 @@ public class Game
 
     public void RunGeneration()
     {
+        this.Generation++;
+        
         Span<bool> span = stackalloc bool[data.Length];
         int count, wid = width - 1, hei = height - 1;
 
@@ -130,9 +136,14 @@ public class Game
                     span[i + j * width] = count == 3;
             }
         }
-    
+
+        int popcount = 0;
         for (int n = 0; n < data.Length; n++)
-            this.data[n] = span[n];
+        {
+            if (this.data[n] = span[n])
+                popcount++;
+        }
+        Register.Add(popcount);
     }
 
     public string Copy(int i, int j, int wid, int hei)
@@ -175,5 +186,10 @@ public class Game
             if (pj >= Height)
                 return;
         }
+    }
+
+    public void RestartRegister()
+    {
+        this.Register = new PopulationRegister();
     }
 }

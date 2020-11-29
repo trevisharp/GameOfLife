@@ -68,6 +68,7 @@ class Program
         float square = 0, zsquare = 0;
         int speed = 100;
         int accumulation = 0;
+        Font font = new Font(FontFamily.Families[15], 20f);
 
         //Selection Variables
         bool mousedown = false, inselection = false;
@@ -81,6 +82,11 @@ class Program
         //Options Variables
         string optinfo = string.Empty;
         int opt = 0;
+
+        //Population Graphics
+        bool show = false;
+        bool autoskip = false;
+        int skip = 0;
 
         void setsquare()
         {
@@ -110,6 +116,38 @@ class Program
             draw(g =>
             {
                 g.Clear(Color.Black);
+
+                if (show)
+                {
+                    int max = game.Register.Max,
+                        min = game.Register.Min,
+                        delta = max - min;
+                    if (delta == 0)
+                    {
+                        max = max + 2;
+                        delta = 2;
+                    }
+                    float dpx = (height - 20) / delta;
+
+                    float x = 10, y = 10, ny;
+                    foreach (var pop in game.Register.Skip(skip))
+                    {
+                        ny = dpx * (pop - min) + 10;
+                        g.DrawLine(Pens.Red, x, height - y, x + 5, height - ny);
+                        y = ny;
+                        x += 5;
+                    }
+
+                    g.DrawLine(Pens.LimeGreen, new PointF(10, 10), new PointF(10, height - 10));
+                    g.DrawLine(Pens.LimeGreen, new PointF(10, height - 10), new PointF(width - 10, height - 10));
+                    g.DrawString(max.ToString(), font, Brushes.LimeGreen, new PointF(15, 10));
+                    g.DrawString(min.ToString(), font, Brushes.LimeGreen, new PointF(15, height - 20));
+                    g.DrawString(game.Generation.ToString(), font, Brushes.LimeGreen, new PointF(width - 40, 20));
+
+                    if (autoskip)
+                        skip++;
+                }
+
                 for (int i = x0 + xzoom; i < game.Width + x0 - xzoom; i++)
                 {
                     for (int j = y0 + yzoom; j < game.Height + y0 - yzoom; j++)
@@ -138,7 +176,7 @@ class Program
                 draw(g =>
                 {
                     g.Clear(Color.Black);
-                    g.DrawString(optinfo, form.Font, Brushes.White, PointF.Empty);
+                    g.DrawString(optinfo, font, Brushes.White, PointF.Empty);
                 });
             }
             else if (started)
@@ -254,6 +292,48 @@ class Program
                 case Keys.S:
                     optinfo = "speed: ";
                     opt = 3;
+                    break;
+                case Keys.I:
+                    optinfo =
+                    @"
+                        Regras de Simulação:
+                        A cada geração:
+                            -Uma célula com 1 ou menos células adjancentes morre de solidão.
+                            -Uma célula com 2 ou 3 células adjacentes vive normalmente.
+                            -Uma célula com 4 ou mais células adjacentes morre por superpopulação.
+                            -Uma nova célula nasce num quadrado sem célula caso tenha exatamente 3 céulas ajdacentes.
+
+                        Lista de Comandos:
+                        Enter - Iniciar/Parar Simulação ou aceitar opções.
+                        Esc - Fechar Apliação.
+                        W - Editar Largura do mapa.
+                        H - Editar Altura do mapa.
+                        S - Editar velocidade da simulação de 1 a 100.
+                        I - Ver esta tela.
+                        P - Quando inciada a execução, mostrar gráfico da população.
+                        A - Mover gráfico da população automaticamente.
+                        Seta para Direita - Mover gráfico para direita.
+                        Seta para Esquerda - Mover gráfico para esquerda.
+                        Ctrl + C - Copiar Seção.
+                        Ctrl + V - Colar Seção.
+                        Botão direito - Clique para adicionar celula viva, segure e mova para selecionar Seção.
+                        Botão esquerdo - Arraste para arrastar o mapa.
+                        Scroll - De zoom no centro do mapa.
+                    ";
+                    opt = 4;
+                    break;
+                
+                case Keys.P:
+                    show = !show;
+                    break;
+                case Keys.A:
+                    autoskip = !autoskip;
+                    break;
+                case Keys.Right:
+                    skip++;
+                    break;
+                case Keys.Left:
+                    skip--;
                     break;
 
                 case Keys.C:
