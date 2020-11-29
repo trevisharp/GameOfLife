@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 
 public class Game
 {
@@ -83,7 +84,7 @@ public class Game
                 span[wid + j * width] = count == 3;
         }
 
-        for (int i = 1; i < hei; i++)
+        for (int i = 1; i < wid; i++)
         {
             count = 0;
             if (this[i - 1, 1]) count++;
@@ -132,5 +133,47 @@ public class Game
     
         for (int n = 0; n < data.Length; n++)
             this.data[n] = span[n];
+    }
+
+    public string Copy(int i, int j, int wid, int hei)
+    {
+        StringBuilder s = new StringBuilder();
+        wid += i;
+        hei += j;
+        for (int y = j; y < hei; y++)
+        {
+            for (int x = i; x < wid; x++)
+            {
+                if (this[x, y])
+                    s.Append("*");
+                else s.Append(" ");
+            }
+            s.Append("\n");
+        }
+        return s.ToString();
+    }
+
+    public void Past(int i, int j, string data)
+    {
+        int pi = i, pj = j;
+        foreach (char c in data)
+        {
+            if (c == ' ')
+                this[pi, pj] = false;
+            else if (c == '*')
+                this[pi, pj] = true;
+            else if (c == '\n')
+            {
+                pi = i;
+                pj++;
+            }
+            if (++pi >= Width)
+            {
+                pi = i;
+                pj++;
+            }
+            if (pj >= Height)
+                return;
+        }
     }
 }
