@@ -65,26 +65,60 @@ class Program
         Game game = new Game(10, 10);
         Point p = Point.Empty; //Cursor
         bool started = false;
-        int opt = 0;
-        float square = 0;
+        float square = 0, zsquare = 0;
         int speed = 100;
         int accumulation = 0;
+
+        //Selection Variables
         bool mousedown = false, inselection = false;
         int selx = -1, sely = -1, selx2 = -1, sely2 = -1;
 
+        //Zoom Variables
+        int x0 = 0, y0 = 0, xzoom = 0, yzoom = 0;
+        float zoom = 1.0f;
+        Point movepoint = Point.Empty;
+
+        //Options Variables
         string optinfo = string.Empty;
+        int opt = 0;
+
+        void setsquare()
+        {
+            square = (width - 20) / game.Width > (height - 20) / game.Height
+                    ? (height - 20) / game.Height : (width - 20) / game.Width;
+            zsquare = (width - 20) / (game.Width - x0 - 2 * xzoom)
+                    > (height - 20) / (game.Height - y0 - 2 * yzoom)
+                    ? (height - 20) / (game.Height - y0 - 2 * yzoom)
+                    : (width - 20) / (game.Width - x0 - 2 * xzoom);
+        }
+
+        void treatzoomboundaries()
+        {
+            if (x0 < - 2 * xzoom)
+                x0 = - 2 * xzoom;
+            else if (x0 > 2 * xzoom)
+                x0 = 2 * xzoom;
+
+            if (y0 < - 2 * yzoom)
+                y0 = - 2 * yzoom;
+            else if (y0 > 2 * yzoom)
+                y0 = 2 * yzoom;
+        }
 
         void drawgame()
         {
             draw(g =>
             {
                 g.Clear(Color.Black);
-                for (int i = 0; i < game.Width; i++)
+                for (int i = x0 + xzoom; i < game.Width + x0 - xzoom; i++)
                 {
-                    for (int j = 0; j < game.Height; j++)
+                    for (int j = y0 + yzoom; j < game.Height + y0 - yzoom; j++)
                     {
                         if (game[i, j])
-                            g.FillRectangle(Brushes.White, 10 + i * square, 10 + j * square, square, square);
+                            g.FillRectangle(Brushes.White,
+                                10 + (i - x0 - xzoom) * zsquare,
+                                10 + (j - y0 - yzoom) * zsquare,
+                                zsquare, zsquare);
                     }
                 }
             });
@@ -93,8 +127,7 @@ class Program
         onload = delegate
         {
             draw(g => g.Clear(Color.White));
-            square = (width - 20) / game.Width > (height - 20) / game.Height
-                    ? (height - 20) / game.Height : (width - 20) / game.Width;
+            setsquare();
         };
 
         ontick = delegate
@@ -122,16 +155,25 @@ class Program
                 draw(g =>
                 {
                     g.Clear(Color.Black);
-                    for (int i = 0; i < game.Width; i++)
+                    for (int i = x0 + xzoom; i < game.Width + x0 - xzoom; i++)
                     {
-                        for (int j = 0; j < game.Height; j++)
+                        for (int j = y0 + yzoom; j < game.Height + y0 - yzoom; j++)
                         {
                             if (game[i, j])
                             {
-                                g.FillRectangle(Brushes.White, 10 + i * square, 10 + j * square, square, square);
-                                g.DrawRectangle(Pens.Black, 10 + i * square, 10 + j * square, square, square);
+                                g.FillRectangle(Brushes.White,
+                                    10 + (i - x0 - xzoom) * zsquare,
+                                    10 + (j - y0 - yzoom) * zsquare,
+                                    zsquare, zsquare);
+                                g.DrawRectangle(Pens.Black,
+                                    10 + (i - x0 - xzoom) * zsquare,
+                                    10 + (j - y0 - yzoom) * zsquare,
+                                    zsquare, zsquare);
                             }
-                            else g.DrawRectangle(Pens.White, 10 + i * square, 10 + j * square, square, square);
+                            else g.DrawRectangle(Pens.White,
+                                    10 + (i - x0 - xzoom) * zsquare,
+                                    10 + (j - y0 - yzoom) * zsquare,
+                                    zsquare, zsquare);
                         }
                     }
                     if (inselection)
@@ -142,8 +184,10 @@ class Program
                             h = (sely - j) + (sely2 - j);
                         w++;
                         h++;
-                        g.DrawRectangle(Pens.LightGreen, 10 + i * square,
-                            10 + j * square, w * square, h * square);
+                        g.DrawRectangle(Pens.LightGreen,
+                            10 + (i - x0 - xzoom) * zsquare,
+                            10 + (j - y0 - yzoom) * zsquare,
+                            w * zsquare, h * zsquare);
                     }
                 });
             }
@@ -170,8 +214,7 @@ class Program
                                     break;
                                 started = false;
                                 game = new Game(sizew, game.Height);
-                                square = (width - 20) / game.Width > (height - 20) / game.Height
-                                    ? (height - 20) / game.Height : (width - 20) / game.Width;
+                                setsquare();
                                 break;
                             case 2:
                                 int sizeh = int.Parse(optinfo.Substring(8));
@@ -179,8 +222,7 @@ class Program
                                     break;
                                 started = false;
                                 game = new Game(game.Width, sizeh);
-                                square = (width - 20) / game.Width > (height - 20) / game.Height
-                                    ? (height - 20) / game.Height : (width - 20) / game.Width;
+                                setsquare();
                                 break;
                             case 3:
                                 int nspeed = int.Parse(optinfo.Substring(7));
@@ -228,8 +270,8 @@ class Program
                 case Keys.V:
                     if (control)
                     {
-                        int i = (int)((p.X - 10) / square),
-                            j = (int)((p.Y - 10) / square);
+                        int i = (int)((p.X - 10) / zsquare) + x0 + xzoom,
+                            j = (int)((p.Y - 10) / zsquare) + y0 + yzoom;
                         game.Past(i, j, Clipboard.GetText());
                     }
                     break;
@@ -249,14 +291,37 @@ class Program
             }
         };
 
+        pb.MouseWheel += delegate (object sender, MouseEventArgs e)
+        {
+            if (e.Delta > 0)
+                zoom += .1f;
+            else if (e.Delta < 0)
+                zoom -= .1f;
+            if (zoom < 1)
+                zoom = 1;
+
+            xzoom = (game.Width - (int)(game.Width / zoom)) / 2;
+            yzoom = (game.Height - (int)(game.Height / zoom)) / 2;
+
+            treatzoomboundaries();
+            setsquare();
+        };
+
         pb.MouseDown += delegate (object sender, MouseEventArgs e)
         {
-            inselection = false;
             mousedown = true;
-            int i = (int)((e.Location.X - 10) / square),
-                j = (int)((e.Location.Y - 10) / square);
-            selx = i;
-            sely = j;
+            if (e.Button == MouseButtons.Left)
+            {
+                inselection = false;
+                int i = (int)((e.Location.X - 10) / zsquare) + x0 + xzoom,
+                    j = (int)((e.Location.Y - 10) / zsquare) + y0 + yzoom;
+                selx = i;
+                sely = j;
+            }
+            else if (e.Button == MouseButtons.Right)
+            {
+                movepoint = e.Location;
+            }
         };
 
         pb.MouseClick += delegate (object sender, MouseEventArgs e)
@@ -265,8 +330,8 @@ class Program
                 return;
             if (e.Button == MouseButtons.Left)
             {
-                int i = (int)((e.Location.X - 10) / square),
-                    j = (int)((e.Location.Y - 10) / square);
+                int i = (int)((e.Location.X - 10) / zsquare) + x0 + xzoom,
+                    j = (int)((e.Location.Y - 10) / zsquare) + y0 + yzoom;
                 if (i > -1 && i < game.Width && j > -1 && j < game.Height)
                     game[i, j] = !game[i, j];
             }
@@ -275,21 +340,45 @@ class Program
         pb.MouseUp += delegate (object sender, MouseEventArgs e)
         {
             mousedown = false;
+            form.Cursor = Cursors.Default;
         };
 
         pb.MouseMove += delegate (object sender, MouseEventArgs e)
         {
-            if (mousedown)
-            {
-                //Selecte mechanics
-                int i = (int)((e.Location.X - 10) / square),
-                            j = (int)((e.Location.Y - 10) / square);
-                selx2 = i;
-                sely2 = j;
-                if (selx != selx2 || sely != sely2)
-                    inselection = true;
-            }
             p = e.Location;
+            if (e.Button == MouseButtons.Left)
+            {
+                if (mousedown)
+                {
+                    //Selecte mechanics
+                    int i = (int)((e.Location.X - 10) / zsquare) + x0 + xzoom,
+                        j = (int)((e.Location.Y - 10) / zsquare) + y0 + yzoom;
+                    selx2 = i;
+                    sely2 = j;
+                    if (selx != selx2 || sely != sely2)
+                        inselection = true;
+                }
+            }
+            else if (e.Button == MouseButtons.Right)
+            {
+                if (mousedown)
+                {
+                    int delta;
+                    delta = (int)((movepoint.X - p.X) / zsquare);
+                    if (delta != 0)
+                    {
+                        x0 += delta;
+                        movepoint.X = p.X;
+                    }
+                    delta = (int)((movepoint.Y - p.Y) / zsquare);
+                    if (delta != 0)
+                    {
+                        y0 += delta;
+                        movepoint.Y = p.Y;
+                    }
+                    treatzoomboundaries();
+                }
+            }
         };
 
         Application.Run(form);

@@ -3,8 +3,8 @@
 ## Todo List
 
 - [x] Grade em escuro para seções brancas 
-- [ ] Copiar/Colar
-- [ ] Zoom
+- [x] Copiar/Colar
+- [x] Zoom
 - [ ] Pintar estruturas
 - [ ] Gerar gifs
 - [ ] Atualizar com base no Git Hub

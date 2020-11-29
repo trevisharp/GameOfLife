@@ -164,7 +164,7 @@ public class Game
                 this[pi, pj] = true;
             else if (c == '\n')
             {
-                pi = i;
+                pi = i - 1;
                 pj++;
             }
             if (++pi >= Width)
