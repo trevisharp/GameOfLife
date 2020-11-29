@@ -23,7 +23,7 @@ Bom divertimento :)
 
 ## Launcher
 
-- [Versão única](https://github.com/trevisharp/GameOfLife/releases/tag/l1.0)
+- [1.0](https://github.com/trevisharp/GameOfLife/releases/tag/l1.0)
 
 ## Releases
 
