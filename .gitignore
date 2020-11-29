@@ -14,3 +14,5 @@ obj/Release/net5.0-windows/.NETCoreApp,Version=v5.0.AssemblyAttributes.cs
 obj/Release/net5.0-windows/GameOfLife.AssemblyInfo.cs
 GOFLauncher/obj/Debug/net5.0/GOFLauncher.AssemblyInfo.cs
 GOFLauncher/obj/Debug/net5.0/.NETCoreApp,Version=v5.0.AssemblyAttributes.cs
+GOFLauncher/obj/Release/net5.0/GOFLauncher.AssemblyInfo.cs
+GOFLauncher/obj/Release/net5.0/.NETCoreApp,Version=v5.0.AssemblyAttributes.cs
