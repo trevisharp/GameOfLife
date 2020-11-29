@@ -1,5 +1,11 @@
 # GameOfLife
 
+## Launcher
+
+- [1.0](https://github.com/trevisharp/GameOfLife/releases/tag/l1.0)
+
+Usando o Launcher ao invés de uma versão específica você recebera atualizações automáticas quando uma nova versão for lançada.
+
 ## Releases
 
 - [1.0](https://github.com/trevisharp/GameOfLife/releases/tag/1%2C0)
