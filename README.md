@@ -1,5 +1,9 @@
 # GameOfLife
 
+## Releases
+
+- [1.0](https://github.com/trevisharp/GameOfLife/releases/tag/1%2C0)
+
 ## Todo List
 
 - [x] Grade em escuro para seções brancas 
@@ -11,4 +15,4 @@
 - [x] Inicializar grade com tamanho melhor
 - [ ] Salvar/Importar/Exportar
 - [ ] Sistema de bordas conectas
-- [x] Gráfico de população ao longo do tempo
+- [ ] Gráfico de população ao longo do tempo
