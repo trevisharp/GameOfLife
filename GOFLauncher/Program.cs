@@ -8,7 +8,6 @@ using System.Text.RegularExpressions;
 //Try update file
 try
 {
-
     Ping ping = new Ping();
     var reply = ping.Send("www.google.com", 3000);
     if (reply.Status != IPStatus.Success)
