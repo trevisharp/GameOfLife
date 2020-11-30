@@ -62,6 +62,8 @@ class Program
 
         #endregion
 
+        #region Variables
+
         Game game = null;
         Point p = Point.Empty; //Cursor
         bool started = false;
@@ -87,6 +89,8 @@ class Program
         bool show = false;
         bool autoskip = false;
         int skip = 0;
+
+        #endregion
 
         void setsquare()
         {
@@ -278,6 +282,7 @@ class Program
                     break;
                 case Keys.Back:
                     started = false;
+                    zoom = 0;
                     opt = 0;
                     game = new Game(game.Width, game.Height);
                     break;
@@ -301,7 +306,9 @@ class Program
                     }
                     optinfo =
                     @"
-                        Regras de Simulação:
+                        Jogo da Vida de Conway
+                        
+                        Regras:
                         A cada geração:
                             -Uma célula com 1 ou menos células adjancentes morre de solidão.
                             -Uma célula com 2 ou 3 células adjacentes vive normalmente.
@@ -324,6 +331,8 @@ class Program
                         Botão direito - Clique para adicionar celula viva, segure e mova para selecionar Seção.
                         Botão esquerdo - Arraste para arrastar o mapa.
                         Scroll - De zoom no centro do mapa.
+
+                        Em homenagem a John Conway (1937-2020)
                     ";
                     opt = 4;
                     break;
