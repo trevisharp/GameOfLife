@@ -28,6 +28,7 @@ Bom divertimento :)
 ## Releases
 
 - [1.0](https://github.com/trevisharp/GameOfLife/releases/tag/1%2C0)
+- [1.1](https://github.com/trevisharp/GameOfLife/releases/tag/1%2C1)
 
 ## Features futuras (nem todas funcionam 100%)
 
