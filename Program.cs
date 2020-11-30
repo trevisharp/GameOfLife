@@ -104,13 +104,13 @@ class Program
 
         void treatzoomboundaries()
         {
-            if (x0 < - 2 * xzoom)
-                x0 = - 2 * xzoom;
+            if (x0 < -2 * xzoom)
+                x0 = -2 * xzoom;
             else if (x0 > 2 * xzoom)
                 x0 = 2 * xzoom;
 
-            if (y0 < - 2 * yzoom)
-                y0 = - 2 * yzoom;
+            if (y0 < -2 * yzoom)
+                y0 = -2 * yzoom;
             else if (y0 > 2 * yzoom)
                 y0 = 2 * yzoom;
         }
@@ -166,11 +166,52 @@ class Program
             });
         }
 
+        void openinstruction()
+        {
+            if (opt == 4)
+            {
+                opt = 0;
+                return;
+            }
+            optinfo =
+            @"
+                        Jogo da Vida de Conway
+                        
+                        Regras:
+                        A cada geração:
+                            -Uma célula com 1 ou menos células adjancentes morre de solidão.
+                            -Uma célula com 2 ou 3 células adjacentes vive normalmente.
+                            -Uma célula com 4 ou mais células adjacentes morre por superpopulação.
+                            -Uma nova célula nasce num quadrado sem célula caso tenha exatamente 3 céulas ajdacentes.
+
+                        Lista de Comandos:
+                        Enter - Iniciar/Parar Simulação ou aceitar opções.
+                        Esc - Fechar Apliação.
+                        W - Editar Largura do mapa.
+                        H - Editar Altura do mapa.
+                        S - Editar velocidade da simulação de 1 a 100.
+                        I - Ver/Fechar esta tela.
+                        P - Quando inciada a execução, mostrar gráfico da população.
+                        A - Mover gráfico da população automaticamente.
+                        Seta para Direita - Mover gráfico para direita.
+                        Seta para Esquerda - Mover gráfico para esquerda.
+                        Ctrl + C - Copiar Seção.
+                        Ctrl + V - Colar Seção.
+                        Botão direito - Clique para adicionar celula viva, segure e mova para selecionar Seção.
+                        Botão esquerdo - Arraste para arrastar o mapa.
+                        Scroll - De zoom no centro do mapa.
+
+                        Em homenagem a John Conway (1937-2020)
+            ";
+            opt = 4;
+        }
+
         onload = delegate
         {
             game = new Game(100, (int)(100.0 / pb.Width * pb.Height));
             draw(g => g.Clear(Color.White));
             setsquare();
+            openinstruction();
         };
 
         ontick = delegate
@@ -180,6 +221,13 @@ class Program
                 draw(g =>
                 {
                     g.Clear(Color.Black);
+
+                    g.FillRectangle(Brushes.White, .8f * width + 2, .3f * height + 2, 46, 46);
+                    g.FillRectangle(Brushes.White, .8f * width + 2, .3f * height + 52, 46, 46);
+                    g.FillRectangle(Brushes.White, .8f * width + 2, .3f * height + 102, 46, 46);
+                    g.FillRectangle(Brushes.White, .8f * width + 52, .3f * height + 102, 46, 46);
+                    g.FillRectangle(Brushes.White, .8f * width + 102, .3f * height + 52, 46, 46);
+
                     g.DrawString(optinfo, font, Brushes.White, PointF.Empty);
                 });
             }
@@ -252,26 +300,32 @@ class Program
                         switch (opt)
                         {
                             case 1:
-                                int sizew = int.Parse(optinfo.Substring(7));
-                                if (sizew < 4 || sizew > 1000)
-                                    break;
-                                started = false;
-                                game = new Game(sizew, game.Height);
-                                setsquare();
+                                if (int.TryParse(optinfo.Substring(7), out int sizew))
+                                {
+                                    if (sizew < 4 || sizew > 1000)
+                                        break;
+                                    started = false;
+                                    game = new Game(sizew, game.Height);
+                                    setsquare();
+                                }
                                 break;
                             case 2:
-                                int sizeh = int.Parse(optinfo.Substring(8));
-                                if (sizeh < 4 || sizeh > 1000)
-                                    break;
-                                started = false;
-                                game = new Game(game.Width, sizeh);
-                                setsquare();
+                                if (int.TryParse(optinfo.Substring(8), out int sizeh))
+                                {
+                                    if (sizeh < 4 || sizeh > 1000)
+                                        break;
+                                    started = false;
+                                    game = new Game(game.Width, sizeh);
+                                    setsquare();
+                                }
                                 break;
                             case 3:
-                                int nspeed = int.Parse(optinfo.Substring(7));
-                                if (nspeed < 1)
-                                    break;
-                                speed = nspeed;
+                                if (int.TryParse(optinfo.Substring(7), out int nspeed))
+                                {
+                                    if (nspeed < 1)
+                                        break;
+                                    speed = nspeed;
+                                }
                                 break;
                         }
                         opt = 0;
@@ -299,44 +353,8 @@ class Program
                     opt = 3;
                     break;
                 case Keys.I:
-                    if (opt == 4)
-                    {
-                        opt = 0;
-                        break;
-                    }
-                    optinfo =
-                    @"
-                        Jogo da Vida de Conway
-                        
-                        Regras:
-                        A cada geração:
-                            -Uma célula com 1 ou menos células adjancentes morre de solidão.
-                            -Uma célula com 2 ou 3 células adjacentes vive normalmente.
-                            -Uma célula com 4 ou mais células adjacentes morre por superpopulação.
-                            -Uma nova célula nasce num quadrado sem célula caso tenha exatamente 3 céulas ajdacentes.
-
-                        Lista de Comandos:
-                        Enter - Iniciar/Parar Simulação ou aceitar opções.
-                        Esc - Fechar Apliação.
-                        W - Editar Largura do mapa.
-                        H - Editar Altura do mapa.
-                        S - Editar velocidade da simulação de 1 a 100.
-                        I - Ver esta tela.
-                        P - Quando inciada a execução, mostrar gráfico da população.
-                        A - Mover gráfico da população automaticamente.
-                        Seta para Direita - Mover gráfico para direita.
-                        Seta para Esquerda - Mover gráfico para esquerda.
-                        Ctrl + C - Copiar Seção.
-                        Ctrl + V - Colar Seção.
-                        Botão direito - Clique para adicionar celula viva, segure e mova para selecionar Seção.
-                        Botão esquerdo - Arraste para arrastar o mapa.
-                        Scroll - De zoom no centro do mapa.
-
-                        Em homenagem a John Conway (1937-2020)
-                    ";
-                    opt = 4;
+                    openinstruction();
                     break;
-                
                 case Keys.P:
                     show = !show;
                     break;
