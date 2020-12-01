@@ -3,13 +3,18 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using static AnimatedGif.AnimatedGif;
+
 class Program
 {
+    static readonly string v = "v1.2";
+
     [STAThread]
     public static void Main(string[] args)
     {
@@ -35,6 +40,8 @@ class Program
         Action<Keys, bool, bool> onkey = null;
         float width = 0, height = 0;
 
+        Bitmap bmp = null;
+
         form.PreviewKeyDown += delegate (object sender, PreviewKeyDownEventArgs e)
         {
             onkey(e.KeyCode, e.Control, e.Shift);
@@ -43,7 +50,7 @@ class Program
         {
             width = pb.Width;
             height = pb.Height;
-            Bitmap bmp = new Bitmap((int)width, (int)height);
+            bmp = new Bitmap((int)width, (int)height);
             Graphics g = Graphics.FromImage(bmp);
             draw = f =>
             {
@@ -84,11 +91,17 @@ class Program
         //Options Variables
         string optinfo = string.Empty;
         int opt = 0;
+        int optdesloc = 0;
 
         //Population Graphics
         bool show = false;
         bool autoskip = false;
         int skip = 0;
+
+        //Gif
+        List<Bitmap> bmps = new List<Bitmap>();
+        SaveFileDialog dialog = new SaveFileDialog();
+        bool gifon = false;
 
         #endregion
 
@@ -163,7 +176,27 @@ class Program
                                 zsquare, zsquare);
                     }
                 }
+
+                if (gifon)
+                    bmps.Add(bmp.Clone() as Bitmap);
             });
+        }
+
+        void makegif()
+        {
+            dialog.Title = "Salvar gif";
+            dialog.FileName = "gif.gif";
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                using (var gif = Create(dialog.FileName, 100 * 100 / speed))
+                {
+                    foreach (var bmp in bmps)
+                    {
+                        gif.AddFrame(bmp);
+                    }
+                }
+                bmps.Clear();
+            }
         }
 
         void openinstruction()
@@ -171,11 +204,14 @@ class Program
             if (opt == 4)
             {
                 opt = 0;
+                optdesloc = 0;
                 return;
             }
             optinfo =
             @"
                         Jogo da Vida de Conway
+
+                        Em homenagem a John Conway (1937-2020)
                         
                         Regras:
                         A cada geração:
@@ -185,6 +221,7 @@ class Program
                             -Uma nova célula nasce num quadrado sem célula caso tenha exatamente 3 céulas ajdacentes.
 
                         Lista de Comandos:
+                        Scroll - De zoom no centro do mapa/Descer tela nas telas de opção.
                         Enter - Iniciar/Parar Simulação ou aceitar opções.
                         Esc - Fechar Apliação.
                         W - Editar Largura do mapa.
@@ -192,6 +229,7 @@ class Program
                         S - Editar velocidade da simulação de 1 a 100.
                         I - Ver/Fechar esta tela.
                         P - Quando inciada a execução, mostrar gráfico da população.
+                        G - Inicia/Para gravação de gif.
                         A - Mover gráfico da população automaticamente.
                         Seta para Direita - Mover gráfico para direita.
                         Seta para Esquerda - Mover gráfico para esquerda.
@@ -199,9 +237,6 @@ class Program
                         Ctrl + V - Colar Seção.
                         Botão direito - Clique para adicionar celula viva, segure e mova para selecionar Seção.
                         Botão esquerdo - Arraste para arrastar o mapa.
-                        Scroll - De zoom no centro do mapa.
-
-                        Em homenagem a John Conway (1937-2020)
             ";
             opt = 4;
         }
@@ -222,13 +257,16 @@ class Program
                 {
                     g.Clear(Color.Black);
 
+                    g.DrawString(v, font, Brushes.White, new PointF(width - 40, 0));
+
                     g.FillRectangle(Brushes.White, .8f * width + 2, .3f * height + 2, 46, 46);
                     g.FillRectangle(Brushes.White, .8f * width + 2, .3f * height + 52, 46, 46);
                     g.FillRectangle(Brushes.White, .8f * width + 2, .3f * height + 102, 46, 46);
                     g.FillRectangle(Brushes.White, .8f * width + 52, .3f * height + 102, 46, 46);
                     g.FillRectangle(Brushes.White, .8f * width + 102, .3f * height + 52, 46, 46);
 
-                    g.DrawString(optinfo, font, Brushes.White, PointF.Empty);
+                    g.DrawString(optinfo, font, Brushes.White,
+                        new PointF(0, optdesloc));
                 });
             }
             else if (started)
@@ -329,6 +367,7 @@ class Program
                                 break;
                         }
                         opt = 0;
+                        optdesloc = 0;
                     }
                     break;
                 case Keys.Escape:
@@ -338,6 +377,7 @@ class Program
                     started = false;
                     zoom = 0;
                     opt = 0;
+                    optdesloc = 0;
                     game = new Game(game.Width, game.Height);
                     break;
                 case Keys.W:
@@ -355,12 +395,20 @@ class Program
                 case Keys.I:
                     openinstruction();
                     break;
+
+                case Keys.G:
+                    if (gifon)
+                        makegif();
+                    gifon = !gifon;
+                    break;
+
                 case Keys.P:
                     show = !show;
                     break;
                 case Keys.A:
                     autoskip = !autoskip;
                     break;
+
                 case Keys.Right:
                     skip++;
                     break;
@@ -406,18 +454,25 @@ class Program
 
         pb.MouseWheel += delegate (object sender, MouseEventArgs e)
         {
-            if (e.Delta > 0)
-                zoom += .1f;
-            else if (e.Delta < 0)
-                zoom -= .1f;
-            if (zoom < 1)
-                zoom = 1;
+            if (opt == 0)
+            {
+                if (e.Delta > 0)
+                    zoom += .1f;
+                else if (e.Delta < 0)
+                    zoom -= .1f;
+                if (zoom < 1)
+                    zoom = 1;
 
-            xzoom = (game.Width - (int)(game.Width / zoom)) / 2;
-            yzoom = (game.Height - (int)(game.Height / zoom)) / 2;
+                xzoom = (game.Width - (int)(game.Width / zoom)) / 2;
+                yzoom = (game.Height - (int)(game.Height / zoom)) / 2;
 
-            treatzoomboundaries();
-            setsquare();
+                treatzoomboundaries();
+                setsquare();
+            }
+            else
+            {
+                optdesloc += e.Delta / 5;
+            }
         };
 
         pb.MouseDown += delegate (object sender, MouseEventArgs e)

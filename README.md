@@ -29,6 +29,7 @@ Bom divertimento :)
 
 - [1.0](https://github.com/trevisharp/GameOfLife/releases/tag/1%2C0)
 - [1.1](https://github.com/trevisharp/GameOfLife/releases/tag/1%2C1)
+- [1.2](https://github.com/trevisharp/GameOfLife/releases/tag/1%2C2)
 
 ## Features futuras (nem todas funcionam 100%)
 
@@ -36,11 +37,13 @@ Bom divertimento :)
 - [x] Copiar/Colar
 - [x] Zoom
 - [ ] Pintar estruturas
-- [ ] Gerar gifs
+- [x] Gerar gifs
 - [x] Atualizar com base no Git Hub
 - [x] Inicializar grade com tamanho melhor
 - [ ] Salvar/Importar/Exportar
 - [ ] Sistema de bordas conectas
 - [x] Gráfico de população ao longo do tempo
-- [x] Laucher
+- [x] Launcher
 - [ ] Ferramentas de desenho
+- [x] Apresentar versão na tela inicial
+- [x] Permitir Scroll na tela inicial
